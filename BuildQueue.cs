@@ -290,6 +290,21 @@ namespace BuildQueue
 
             ItemTrackers.Sort();
 
+            foreach(var itemType in new ItemType[] { ItemType.Componenet, ItemType.Ingot, ItemType.Ore })
+            {
+                var maxSize = ItemTrackers.Where(i => i.ItemType == itemType)
+                    .DefaultIfEmpty()
+                    .Max(i => i.GetDisplaySize());
+                if (maxSize > 0)
+                {
+                    maxSize += 2;
+                    foreach(var itemtracer in ItemTrackers.Where(i => i.ItemType == itemType))
+                    {
+                        itemtracer.SetPadding(maxSize);
+                    }
+                }
+            }
+
             return true;
         }
 
@@ -387,16 +402,18 @@ namespace BuildQueue
 
         private class ItemTracker : IComparable<ItemTracker>
         {
-            private const int progressFillSize = 20;
+            private const int progressFillSize = 30;
 
-            public string DisplayName { get; }
+            private int fillSpacing = 0;
+            public string DisplayName { get; private set; }
             public string IngameName { get; }
             public ItemType ItemType { get; }
             public float TargetAmount { get; }
             public float CurrentAmount { get; set;}
+
             public ItemTracker(string displayName, string ingameName, ItemType itemType, float targetAmount)
             {
-                DisplayName = displayName;
+                DisplayName = displayName.Trim();
                 IngameName = ingameName;
                 ItemType = itemType;
                 TargetAmount = targetAmount;
@@ -407,11 +424,27 @@ namespace BuildQueue
                 return TargetAmount > CurrentAmount;
             }
 
+            internal int GetDisplaySize() 
+            {
+                var result = 0.0f;
+                foreach(var c in DisplayName)
+                {
+                    result += TypeSpacing[c.ToString()];
+                }
+                return (int)result;
+            }
+
+            internal void SetPadding(int totalSize)
+            {
+                var padding = totalSize - GetDisplaySize();
+                DisplayName = DisplayName.Trim() + new string(' ', padding);
+            }
+
             private string GetProgressBar()
             {
                 var percent = CurrentAmount/TargetAmount;
                 var fillChars = (int)(percent * progressFillSize);
-                var leftSide = new string('!', Math.Min(progressFillSize, Math.Max(0, fillChars)));
+                var leftSide = new string('I', Math.Min(progressFillSize, Math.Max(0, fillChars)));
                 var rightSide = new string(' ', Math.Min(progressFillSize, Math.Max(0, progressFillSize - fillChars)));
                 return $"[{leftSide}{rightSide}]";
             }
@@ -420,11 +453,11 @@ namespace BuildQueue
             {
                 if (value >= 1000000)
                 {
-                    return (value/1000000).ToString() + "M";
+                    return (value/1000000).ToString("0") + "M";
                 }
                 else if (value >= 1000)
                 {
-                    return (value/1000).ToString() + "K";
+                    return (value/1000).ToString("0") + "K";
                 }
                 else
                 {
@@ -472,6 +505,79 @@ namespace BuildQueue
             Weapon,
             Tool,
         }
+
+        private static readonly Dictionary<string, float> TypeSpacing = new Dictionary<string, float>()
+        {
+            { "A", 2.45f },
+            { "B", 2.45f },
+            { "C", 2.22f },
+            { "D", 2.45f },
+            { "E", 2.11f },
+            { "F", 2.00f },
+            { "G", 2.09f },
+            { "H", 2.33f },
+            { "I", 1.00f },
+            { "J", 1.89f },
+            { "K", 2.00f },
+            { "L", 1.78f },
+            { "M", 3.00f },
+            { "N", 2.45f },
+            { "O", 2.45f },
+            { "P", 2.33f },
+            { "Q", 2.45f },
+            { "R", 2.45f },
+            { "S", 2.45f },
+            { "T", 2.00f },
+            { "U", 2.33f },
+            { "V", 2.33f },
+            { "W", 3.56f },
+            { "X", 2.22f },
+            { "Y", 2.33f },
+            { "Z", 2.22f },
+            
+            { "a", 2.00f },
+            { "b", 2.00f },
+            { "c", 1.89f },
+            { "d", 2.00f },
+            { "e", 2.00f },
+            { "f", 1.11f },
+            { "g", 2.00f },
+            { "h", 2.00f },
+            { "i", 1.00f },
+            { "j", 1.00f },
+            { "k", 2.00f },
+            { "l", 1.00f },
+            { "m", 2.29f },
+            { "n", 2.00f },
+            { "o", 2.00f },
+            { "p", 2.00f },
+            { "q", 2.00f },
+            { "r", 1.31f },
+            { "s", 2.00f },
+            { "t", 1.11f },
+            { "u", 2.00f },
+            { "v", 1.78f },
+            { "w", 2.71f },
+            { "x", 1.78f },
+            { "y", 2.00f },
+            { "z", 1.89f },
+
+            { "0", 2.22f },
+            { "1", 1.11f },
+            { "2", 2.22f },
+            { "3", 2.00f },
+            { "4", 2.22f },
+            { "5", 2.22f },
+            { "6", 2.22f },
+            { "7", 1.89f },
+            { "8", 1.11f },
+            { "9", 2.22f },
+
+            { ",", 1.11f },
+            { ".", 1.11f },
+            { " ", 1.00f },
+            { "!", 1.00f },
+        };
         
 // ------------------------------End Copy Here--------------------------------------
     }
