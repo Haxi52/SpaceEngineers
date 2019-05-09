@@ -8,12 +8,25 @@ namespace SunTracker2
 {
     public class Program : Sandbox.ModAPI.Ingame.MyGridProgram
     {
+
+/*
+[SolarTracking]
+Rotor1=Solar Rotor 1a
+Rotor2=Solar Rotor 1b
+
+
+
+[solarbattery]
+ */
+
+
+
 // -------------------------------------------------------------------
 
-        private static string SolarTrackingSectionName = "solartracking";
+        private static string SolarTrackingSectionName = "SolarTracking";
         private static string SolarBatterySectionName = "solarbattery";
-        private static string Rotor1KeyName = "rotor1";
-        private static string Rotor2KeyName = "rotor2";
+        private static string Rotor1KeyName = "Rotor1";
+        private static string Rotor2KeyName = "Rotor2";
 
         private List<SunTracker> trackers = new List<SunTracker>();
 

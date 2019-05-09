@@ -29,6 +29,10 @@ namespace ShowInventory
         {
             Runtime.UpdateFrequency = UpdateFrequency.Update100;
             Setup();
+            // delete me
+            var rotor = GridTerminalSystem.GetBlockWithName("Builder Rotor 2") as IMyMotorStator;
+            rotor.TargetVelocityRPM = 0.1f;
+            //
         }
 
 
